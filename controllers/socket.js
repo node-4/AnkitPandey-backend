@@ -55,7 +55,7 @@ async function create_sessions(clientKey, sessionId) {
 
  async function CreateSession (req,res)  {
     try{
-    //  const client_key = req.body.userId;
+     const client_key = req.body.userId;
 
 // Enter the session Id
 const api_key = 'phbqbEUMFmlirQuSsQUaVzTbkgusTfqqhKZgGNjtegLWtdrItIhrbzBGmGhlqpMhBqjJgssJgqqdfaZIsdNmZVVHBrpOrTyYScId';
