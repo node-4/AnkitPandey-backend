@@ -43,8 +43,8 @@ exports.charthistory = async(req,res) => {
      orderData = {
         token:req.body.token,
         resolution: req.body.resolution,
-        from: req.body.from,
-        to: req.body.to,
+        from: Math.floor(new Date(req.body.from).getTime()/1000.0),
+        to: Math.floor(new Date(req.body.to).getTime()/1000.0),
         exchange: req.body.exchange
      }
     const OrderAPIData = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/chart/history", orderData,{
