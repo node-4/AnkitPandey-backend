@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const { findOne } = require("../models/vender_auth");
 const authVender = require("../models/vender_auth");
 const cashBack = require("../models/cashback");
+const xlsx = require('xlsx')
 
 async function generateSessionId(userId, req, res) {
     try {
@@ -44,7 +45,6 @@ async function generateSessionId(userId, req, res) {
         console.log(err);
     }
 }
-
 exports.getProfile = async (req, res) => {
     try {
         const userData = await generateSessionId(req.params.userId);
@@ -71,7 +71,6 @@ exports.getProfile = async (req, res) => {
         });
     }
 };
-
 exports.getCashBack = async (req, res) => {
     try {
         const data = await cashBack.findOne({ userId: req.params.userId });
@@ -132,6 +131,35 @@ exports.getAlluser = async (req, res) => {
             message: "ok",
             result: data,
         });
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            message: err.message,
+        });
+    }
+};
+exports.AddcashBackExcel = async (req, res) => {
+    try {
+        console.log(req.file)
+        const file = req.file.originalname;
+        const workbook = xlsx.readFile('upload/cashback.xlsx');
+        const sheet_name_list = workbook.SheetNames;
+        console.log(sheet_name_list);
+        const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+        console.log(data);
+        for (const employee of data) {
+            let findCash = await cashBack.findOne({ userId: employee.userId });
+            if (findCash) {
+                await cashBack.findByIdAndUpdate({ _id: findCash._id }, { $set: { cash: findCash.cash + employee.cash } }, { new: true })
+            } else {
+                const newEmployee = new cashBack({
+                    userId: employee.userId,
+                    cash: employee.cash
+                });
+                await newEmployee.save();
+            }
+        }
+        res.status(200).json({message: "upload succefully",result: {},});
     } catch (err) {
         console.log(err);
         res.status(400).json({
