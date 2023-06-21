@@ -18,10 +18,13 @@ exports.getVendorSessionId = async (req, res) => {
         userId: userData1.userId,
         userData: hash
       });
-      return res.status(200).json({
-        message: data.data,
-        userId: req.body.userId
-      })
+      let update = await AuthVender.findByIdAndUpdate({ _id: userData1._id }, { $set: { sessionId: data.data.userSession } }, { new: true });
+      if (update) {
+        return res.status(200).json({
+          message: data.data,
+          userId: req.body.userId
+        })
+      }
     } else {
       const userId = req.body.userId
       const secretkey = req.body.key
@@ -84,14 +87,14 @@ exports.AddExcel = async (req, res) => {
 };
 
 
-exports.getAllSymbol = async(req,res) => {
-  try{
+exports.getAllSymbol = async (req, res) => {
+  try {
     const result = await symbol.find();
     res.status(200).json({
       message: "ok",
       result: result
     })
-  }catch(err){
+  } catch (err) {
     console.log(err);
     res.status(400).json({
       message: err.message,

@@ -40,7 +40,7 @@ exports.charthistory = async(req,res) => {
     try{
         const userData = await  generateSessionId(req.body.userId)
    console.log(userData)
-     orderData = {
+    let orderData = {
         token:req.body.token,
         resolution: req.body.resolution,
         from: Math.floor(new Date(req.body.from).getTime()/1000.0),
