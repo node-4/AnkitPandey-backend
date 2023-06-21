@@ -5,42 +5,66 @@ const realtimeData = mongoose.Schema({
     t: {
         type: String
     },
+    pp: {
+        type: String
+    },
+    ml: {
+        type: String
+    },
     e: {
         type: String
     },
     tk: {
         type: String
     },
+    ts: {
+        type: String
+    },
+    ls: {
+        type: String
+    },
+    ti: {
+        type: String
+    },
+    c: {
+        type: String
+    },
+    lp: {
+        type: String
+    },
+    pc: {
+        type: String
+    },
+    o: {
+        type: String
+    },
+    h: {
+        type: String
+    },
+    l: {
+        type: String
+    },
     ft: {
         type: String
     },
-    bq1: {
+    ap: {
+        type: String
+    },
+    v: {
+        type: String
+    },
+    bp1: {
         type: String
     },
     sp1: {
         type: String
     },
+    bq1: {
+        type: String
+    },
     sq1: {
         type: String
-    }, 
-    v: {
-        type: String
     },
-    pc: {
-        type: String
-    }, 
-    bp1: {
-        type: String
-    }, 
-    lp: {
-        type: String
-    }, 
-    c: {
-        type: String 
-    },
-    h:{
-        type: String
-    }
 })
 
 module.exports = mongoose.model('websocketData', realtimeData)
