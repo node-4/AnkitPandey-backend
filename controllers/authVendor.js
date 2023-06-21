@@ -18,7 +18,8 @@ exports.getVendorSessionId = async (req, res) => {
         userId: userData1.userId,
         userData: hash
       });
-      let update = await AuthVender.findByIdAndUpdate({ _id: userData1._id }, { $set: { sessionId: data.data.userSession } }, { new: true });
+      console.log(data.data);
+      let update = await AuthVender.findByIdAndUpdate({ _id: userData1._id }, { $set: { sessionId: data.data.sessionID } }, { new: true });
       if (update) {
         return res.status(200).json({
           message: data.data,
@@ -38,7 +39,7 @@ exports.getVendorSessionId = async (req, res) => {
       const userData = {
         userId: req.body.userId,
         secretkey: req.body.key,
-        sessionId: data.data.userSession
+        sessionId: data.data.sessionID
       }
       console.log(userData)
       const Data = await AuthVender.create(userData)
