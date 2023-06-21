@@ -3,8 +3,7 @@ const OrderControllers  = require('../controllers/orders_controllers')
 
 
 const router = express()
-
-
+router.post('/createOrders/:userId', OrderControllers.createOrders)
 router.post('/place-order', OrderControllers.PlaceOrder);
 router.get('/fetch-order/:userId', OrderControllers.getOrders)
 router.post('/position-order', OrderControllers.PositionBook);
