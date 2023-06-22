@@ -33,6 +33,7 @@ const profile = require('./router/profile');
 const history = require('./router/history');
 const socket = require('./router/socket');
 const admin = require('./router/admin.route');
+const marketdepth = require('./router/marketdepth');
 
 app.use('/api/v1/', auth_Router);
 app.use('/api/v1/order', order_Router);

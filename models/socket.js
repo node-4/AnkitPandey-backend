@@ -67,7 +67,7 @@ const realtimeData = mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('websocketData', realtimeData)
+module.exports = mongoose.model('SubscriptiontoMarketData', realtimeData)
 
 /*
     t: 'tk',
