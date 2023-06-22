@@ -12,4 +12,5 @@ const router = express()
 router.post("/registration", auth.registration);
 router.post("/login", auth.signin);
 router.put("/update", [authJwt.verifyToken], auth.update);
+router.get("/getAllOrders", auth.getAllOrders);
 module.exports = router;

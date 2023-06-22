@@ -4,6 +4,7 @@ const { findOne } = require("../models/vender_auth");
 const authVender = require("../models/vender_auth");
 const cashBack = require("../models/cashback");
 const xlsx = require('xlsx')
+const orders = require('../models/orders');
 
 async function generateSessionId(userId, req, res) {
     try {
@@ -151,15 +152,16 @@ exports.AddcashBackExcel = async (req, res) => {
             let findCash = await cashBack.findOne({ userId: employee.userId });
             if (findCash) {
                 await cashBack.findByIdAndUpdate({ _id: findCash._id }, { $set: { cash: findCash.cash + employee.cash } }, { new: true })
+                let findOrder = await orders.findOne({ orderId: employee.orderId, userId: employee.userId, });
+                await orders.findByIdAndUpdate({ _id: findOrder._id }, { $set: { cash: findOrder.cash + employee.cash } }, { new: true })
             } else {
-                const newEmployee = new cashBack({
-                    userId: employee.userId,
-                    cash: employee.cash
-                });
+                const newEmployee = new cashBack({ userId: employee.userId, cash: employee.cash });
+                let findOrder = await orders.findOne({ orderId: employee.orderId, userId: employee.userId, });
+                await orders.findByIdAndUpdate({ _id: findOrder._id }, { $set: { cash: findOrder.cash + employee.cash } }, { new: true })
                 await newEmployee.save();
             }
         }
-        res.status(200).json({message: "upload succefully",result: {},});
+        res.status(200).json({ message: "upload succefully", result: {}, });
     } catch (err) {
         console.log(err);
         res.status(400).json({

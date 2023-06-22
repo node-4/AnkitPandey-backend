@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 const OrderManagement = mongoose.Schema({
+    orderId: {
+        type: String
+    },
     userId: {
         type: String
+    },
+    cash : {
+        type: Number, 
+        default: 0
     },
     Prc: {
         type: String

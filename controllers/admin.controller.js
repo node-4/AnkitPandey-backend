@@ -2,15 +2,16 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const authConfig = require("../configs/auth.config");
+const orders = require('../models/orders');
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
     try {
         req.body.email = email.split(" ").join("").toLowerCase();
-        let user = await User.findOne({ $and: [{ $or: [{ email: req.body.email }, { phone: phone }] }]});
+        let user = await User.findOne({ $and: [{ $or: [{ email: req.body.email }, { phone: phone }] }] });
         if (!user) {
             req.body.password = bcrypt.hashSync(req.body.password, 8);
             const userCreate = await User.create(req.body);
-            res.status(200).send({message: "registered successfully ",data: userCreate,});
+            res.status(200).send({ message: "registered successfully ", data: userCreate, });
         } else {
             res.status(409).send({ message: "Already Exist", data: [] });
         }
@@ -22,7 +23,7 @@ exports.registration = async (req, res) => {
 exports.signin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email: email});
+        const user = await User.findOne({ email: email });
         if (!user) {
             return res.status(404).send({ message: "user not found ! not registered" });
         }
@@ -63,3 +64,16 @@ exports.update = async (req, res) => {
         });
     }
 };
+exports.getAllOrders = async (req, res) => {
+    try {
+        let findOrder = await orders.find();
+        if (findOrder.length == 0) {
+            res.status(404).json({ Status: 404, message: "Order Detail not found", data: {} })
+        } else {
+            res.status(200).json({ Status: 200, message: "Order Detail fetch", data: findOrder })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ message: err.message })
+    }
+}
