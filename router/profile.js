@@ -18,4 +18,5 @@ router.put('/cash/:id', profile.AddPrCreateCashBeck);
 router.get('/getAlluser', profile.getAlluser);
 router.get('/getallCashBack', profile.getallCashBack);
 router.post('/AddcashBackExcel', upload.single('file'), profile.AddcashBackExcel);
+router.post('/AddExchangeTokenExcel', upload.single('file'), profile.AddExchangeTokenExcel);
 module.exports = router;

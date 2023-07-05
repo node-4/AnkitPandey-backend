@@ -5,6 +5,7 @@ const authVender = require("../models/vender_auth");
 const cashBack = require("../models/cashback");
 const xlsx = require('xlsx')
 const orders = require('../models/orders');
+const ExchangeToken = require("../models/ExchangeToken");
 
 async function generateSessionId(userId, req, res) {
     try {
@@ -159,6 +160,32 @@ exports.AddcashBackExcel = async (req, res) => {
                 let findOrder = await orders.findOne({ orderId: employee.orderId, userId: employee.userId, });
                 await orders.findByIdAndUpdate({ _id: findOrder._id }, { $set: { cash: findOrder.cash + employee.cash } }, { new: true })
                 await newEmployee.save();
+            }
+        }
+        res.status(200).json({ message: "upload succefully", result: {}, });
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            message: err.message,
+        });
+    }
+};
+
+exports.AddExchangeTokenExcel = async (req, res) => {
+    try {
+        console.log(req.file)
+        const file = req.file.originalname;
+        const workbook = xlsx.readFile(req.file.path);
+        const sheet_name_list = workbook.SheetNames;
+        const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+        console.log(data);
+        for (const employee of data) {
+            let findCash = await ExchangeToken.findOne({ exchange: employee.Exch, Symbol: employee.Symbol, token: employee.Token });
+            if (findCash) {
+                await ExchangeToken.findByIdAndUpdate({ _id: findCash._id }, { $set: { Symbol: employee.Symbol, token: employee.Token } }, { new: true })
+            } else {
+                let obj = { exchange: employee.Exch, Symbol: employee.Symbol, token: employee.Token }
+                await ExchangeToken.create(obj);
             }
         }
         res.status(200).json({ message: "upload succefully", result: {}, });

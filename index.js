@@ -22,8 +22,8 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-  app.get("/", (req, res) => {
-    res.send("Hello World!");
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 const auth_Router = require('./router/authVender');
 const order_Router = require('./router/order_router');
@@ -39,7 +39,7 @@ app.use('/api/v1/', auth_Router);
 app.use('/api/v1/order', order_Router);
 app.use('/api/v1/funds', funds);
 app.use('/api/v1/contract', contract_master);
-app.use('/api/v1/profile',profile );
+app.use('/api/v1/profile', profile);
 app.use('/api/v1/history', history);
 app.use('/api/v1/socket', socket)
 app.use('/api/v1/admin', admin)

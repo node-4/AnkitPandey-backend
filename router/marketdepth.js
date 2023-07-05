@@ -1,8 +1,12 @@
 const express = require('express');
-const profile  = require('../controllers/marketdepth')
-
-
 const router = express()
+require('../DepthData/BCDmarketdepth')
+require('../DepthData/BFOmarketdepth')
+require('../DepthData/BSEmarketdepth')
+require('../DepthData/CDSmarketdepth')
+require('../DepthData/NFOmarketdepth')
+require('../DepthData/NSEmarketdepth')
+require('../DepthData/marketdepth')
 
 
 
