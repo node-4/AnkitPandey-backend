@@ -34,6 +34,7 @@ const history = require('./router/history');
 const socket = require('./router/socket');
 const admin = require('./router/admin.route');
 const marketdepth = require('./router/marketdepth');
+// const historicalData = require('./controllers/historicalData');
 
 app.use('/api/v1/', auth_Router);
 app.use('/api/v1/order', order_Router);
