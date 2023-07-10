@@ -197,7 +197,10 @@ exports.AddExchangeTokenExcel = async (req, res) => {
 };
 exports.getHistorical = async (req, res) => {
     try {
-        const data = { exchange: req.body.exchange, from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token, };
+        const data = {
+            exchange: req.body.exchange,
+            from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token,
+        };
         const Data = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/chart/history", data, {
             headers: {
                 Authorization: 'Bearer ' + req.body.client_key + ' ' + req.body.session_id,
@@ -227,6 +230,52 @@ exports.getHistorical = async (req, res) => {
                 }
             }
             res.status(200).json({ message: "Data get succefully", result: Data.data.result, });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+exports.getHistoricalbeforeLogin = async (req, res) => {
+    try {
+        const client_key = 764564;
+        const api_key = 'phbqbEUMFmlirQuSsQUaVzTbkgusTfqqhKZgGNjtegLWtdrItIhrbzBGmGhlqpMhBqjJgssJgqqdfaZIsdNmZVVHBrpOrTyYScId';
+        const appCode = "YPBDUOOFTSD97U3DGOO4"
+        const session_request = await generateSessionId(client_key, api_key, appCode);
+        if ('loginType' in session_request && session_request['loginType'] == null) {
+            console.log(session_request['emsg']);
+        } else {
+            const session_id = session_request.sessionID
+            const data = { exchange: req.body.exchange, from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token, };
+            const Data = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/chart/history", data, {
+                headers: {
+                    Authorization: 'Bearer ' + client_key + ' ' + session_id,
+                    'Content-Type': 'application/json',
+                }
+            })
+            if (Data.data.result == undefined) {
+
+            } else {
+                for (let k = 0; k < Data.data.result.length; k++) {
+                    let findHis = await historicalData.findOne({ exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time });
+                    if (findHis) {
+                        console.log("------------");
+                        let findHis = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                    } else {
+                        let obj = {
+                            exchange: req.body.exchange,
+                            token: req.body.token,
+                            close: Data.data.result[k].close,
+                            high: Data.data.result[k].high,
+                            low: Data.data.result[k].low,
+                            open: Data.data.result[k].open,
+                            time: Data.data.result[k].time,
+                            volume: Data.data.result[k].volume,
+                        }
+                        await historicalData.create(obj)
+                    }
+                }
+                res.status(200).json({ message: "Data get succefully", result: Data.data.result, });
+            }
         }
     } catch (err) {
         console.log(err);

@@ -20,4 +20,5 @@ router.get('/getallCashBack', profile.getallCashBack);
 router.post('/AddcashBackExcel', upload.single('file'), profile.AddcashBackExcel);
 router.post('/AddExchangeTokenExcel', upload.single('file'), profile.AddExchangeTokenExcel);
 router.post('/getHistorical', profile.getHistorical);
+router.post('/getHistoricalbeforeLogin', profile.getHistoricalbeforeLogin);
 module.exports = router;
