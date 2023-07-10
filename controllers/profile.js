@@ -6,7 +6,7 @@ const cashBack = require("../models/cashback");
 const xlsx = require('xlsx')
 const orders = require('../models/orders');
 const ExchangeToken = require("../models/ExchangeToken");
-
+const historicalData = require("../models/historicalData");
 async function generateSessionId(userId, req, res) {
     try {
         console.log(userId);
