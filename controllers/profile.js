@@ -211,6 +211,7 @@ exports.getHistorical = async (req, res) => {
                 let findHis = await historicalData.findOne({ exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time });
                 if (findHis) {
                     console.log("------------");
+                    let findHis = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
                 } else {
                     let obj = {
                         exchange: req.body.exchange,
