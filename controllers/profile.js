@@ -170,7 +170,6 @@ exports.AddcashBackExcel = async (req, res) => {
         });
     }
 };
-
 exports.AddExchangeTokenExcel = async (req, res) => {
     try {
         console.log(req.file)
@@ -194,5 +193,41 @@ exports.AddExchangeTokenExcel = async (req, res) => {
         res.status(400).json({
             message: err.message,
         });
+    }
+};
+exports.getHistorical = async (req, res) => {
+    try {
+        const data = { exchange: req.body.exchange, from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token, };
+        const Data = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/chart/history", data, {
+            headers: {
+                Authorization: 'Bearer ' + req.body.client_key + ' ' + req.body.session_id,
+                'Content-Type': 'application/json',
+            }
+        })
+        if (Data.data.result == undefined) {
+
+        } else {
+            for (let k = 0; k < Data.data.result.length; k++) {
+                let findHis = await historicalData.findOne({ exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time });
+                if (findHis) {
+                    console.log("------------");
+                } else {
+                    let obj = {
+                        exchange: req.body.exchange,
+                        token: req.body.token,
+                        close: Data.data.result[k].close,
+                        high: Data.data.result[k].high,
+                        low: Data.data.result[k].low,
+                        open: Data.data.result[k].open,
+                        time: Data.data.result[k].time,
+                        volume: Data.data.result[k].volume,
+                    }
+                    await historicalData.create(obj)
+                }
+            }
+            res.status(200).json({ message: "Data get succefully", result: Data.data.result, });
+        }
+    } catch (err) {
+        console.log(err);
     }
 };
