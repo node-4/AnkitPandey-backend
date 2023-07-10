@@ -242,9 +242,9 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
         const appCode = "YPBDUOOFTSD97U3DGOO4"
         const session_request = await generateSessionId(client_key, api_key, appCode);
         if ('loginType' in session_request && session_request['loginType'] == null) {
-            console.log(session_request['emsg']);
+          console.log(session_request['emsg']);
         } else {
-            const session_id = session_request.sessionID
+            const session_id = session_request.userSession
             const data = { exchange: req.body.exchange, from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token, };
             const Data = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/chart/history", data, {
                 headers: {
@@ -258,8 +258,7 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
                 for (let k = 0; k < Data.data.result.length; k++) {
                     let findHis = await historicalData.findOne({ exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time });
                     if (findHis) {
-                        console.log("------------");
-                        let findHis = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                        let findHisss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
                     } else {
                         let obj = {
                             exchange: req.body.exchange,
