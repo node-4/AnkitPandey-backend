@@ -18,6 +18,9 @@ const realtimeData = mongoose.Schema({
     open: {
         type: Number
     },
+    resolution: {
+        type: String
+    },
     time: {
         type: String
     },

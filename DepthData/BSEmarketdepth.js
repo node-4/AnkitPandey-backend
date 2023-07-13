@@ -90,7 +90,7 @@ async function CreateSession(req, res) {
             }
             ws.send(JSON.stringify(dataToSend1));
 
-            let findExchange = await ExchangeToken.find({ exchange: "BSE" });
+            let findExchange = await ExchangeToken.find({ exchange: "BSE", sheet: "BSE" });
             if (findExchange.length > 0) {
               for (let i = 0; i < findExchange.length; i++) {
                 const channel = `${findExchange[i].exchange}|${findExchange[i].token}`
@@ -116,7 +116,7 @@ async function CreateSession(req, res) {
     console.log(err);
   }
 }
-setInterval(CreateSession, 10000);
+setInterval(CreateSession, 50000);
 exports.GetSocketData = async (req, res) => {
   try {
     const data = await realtimeData.find();

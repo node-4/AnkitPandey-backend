@@ -7,6 +7,7 @@ const xlsx = require('xlsx')
 const orders = require('../models/orders');
 const ExchangeToken = require("../models/ExchangeToken");
 const historicalData = require("../models/historicalData");
+const socket = require("../models/socket");
 async function generateSessionId(userId, req, res) {
     try {
         console.log(userId);
@@ -178,12 +179,12 @@ exports.AddExchangeTokenExcel = async (req, res) => {
         const sheet_name_list = workbook.SheetNames;
         const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
         console.log(data);
-        for (const employee of data) {
-            let findCash = await ExchangeToken.findOne({ exchange: employee.Exch, Symbol: employee.Symbol, token: employee.Token });
+        for (let i = 3430; i < data.length; i++) {
+            let findCash = await ExchangeToken.findOne({ sheet: req.params.sheet, exchange: data[i].Exch || data[i].exch, Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token });
             if (findCash) {
-                await ExchangeToken.findByIdAndUpdate({ _id: findCash._id }, { $set: { Symbol: employee.Symbol, token: employee.Token } }, { new: true })
+                await ExchangeToken.findByIdAndUpdate({ _id: findCash._id }, { $set: { Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token } }, { new: true })
             } else {
-                let obj = { exchange: employee.Exch, Symbol: employee.Symbol, token: employee.Token }
+                let obj = { sheet: req.params.sheet, exchange: data[i].Exch || data[i].exch, Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token }
                 await ExchangeToken.create(obj);
             }
         }
@@ -211,10 +212,10 @@ exports.getHistorical = async (req, res) => {
 
         } else {
             for (let k = 0; k < Data.data.result.length; k++) {
-                let findHis = await historicalData.findOne({ exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time });
+                let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
                 if (findHis) {
                     console.log("------------");
-                    let findHis = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                    let findHis = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
                 } else {
                     let obj = {
                         exchange: req.body.exchange,
@@ -225,6 +226,7 @@ exports.getHistorical = async (req, res) => {
                         open: Data.data.result[k].open,
                         time: Data.data.result[k].time,
                         volume: Data.data.result[k].volume,
+                        resolution: req.body.resolution
                     }
                     await historicalData.create(obj)
                 }
@@ -242,7 +244,7 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
         const appCode = "YPBDUOOFTSD97U3DGOO4"
         const session_request = await generateSessionId(client_key, api_key, appCode);
         if ('loginType' in session_request && session_request['loginType'] == null) {
-          console.log(session_request['emsg']);
+            console.log(session_request['emsg']);
         } else {
             const session_id = session_request.userSession
             const data = { exchange: req.body.exchange, from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token, };
@@ -255,10 +257,11 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
             if (Data.data.result == undefined) {
 
             } else {
+                console.log(Data.data.result);
                 for (let k = 0; k < Data.data.result.length; k++) {
-                    let findHis = await historicalData.findOne({ exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time });
+                    let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
                     if (findHis) {
-                        let findHisss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                        let findHisss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
                     } else {
                         let obj = {
                             exchange: req.body.exchange,
@@ -269,6 +272,7 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
                             open: Data.data.result[k].open,
                             time: Data.data.result[k].time,
                             volume: Data.data.result[k].volume,
+                            resolution: req.body.resolution
                         }
                         await historicalData.create(obj)
                     }
@@ -278,5 +282,24 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
         }
     } catch (err) {
         console.log(err);
+    }
+};
+exports.dashboard = async (req, res) => {
+    try {
+        const nifty50 = await socket.findOne({ e: "NSE", tk: "26000" });
+        const niftyBank = await socket.findOne({ e: "NSE", tk: "26009" });
+        const niftyFinService = await socket.findOne({ e: "NSE", tk: "26037" });
+        const sensex = await socket.findOne({ e: "BSE", tk: "1" });
+        const indiaFix = await socket.findOne({ e: "NSE", tk: "26017" });
+        let obj = {
+            nifty50: { lp: nifty50.lp, pc: nifty50.pc },
+            niftyFinService: { lp: niftyFinService.lp, pc: niftyFinService.pc },
+            niftyBank: { lp: niftyBank.lp, pc: niftyBank.pc },
+            sensex: { lp: sensex.lp, pc: sensex.pc },
+            indiaFix: { lp: indiaFix.lp, pc: indiaFix.pc },
+        }
+        res.status(200).json({ message: "ok", data: obj });
+    } catch (err) {
+        res.status(400).json({ message: err.message, });
     }
 };

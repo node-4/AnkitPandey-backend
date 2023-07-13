@@ -7,7 +7,7 @@ require('../DepthData/CDSmarketdepth')
 require('../DepthData/NFOmarketdepth')
 require('../DepthData/NSEmarketdepth')
 require('../DepthData/marketdepth')
-
+require('../DepthData/indicesmarketdepth')
 
 
 

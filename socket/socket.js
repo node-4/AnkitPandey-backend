@@ -76,12 +76,12 @@ async function CreateSession(req, res) {
           if (jsonData.ts == undefined) {
             console.log("-");
           } else {
-            let findData = await realtimeData.findOne({ ts: jsonData.ts, e: jsonData.e });
+            let findData = await realtimeData.findOne({ $and: [{ $or: [{ ts: jsonData.ts, e: jsonData.e }, { t: jsonData.t, e: jsonData.e }] }] });
             if (findData) {
               await realtimeData.findByIdAndUpdate({ _id: findData._id }, { $set: { t: jsonData.t, pp: jsonData.pp, ml: jsonData.ml, e: jsonData.e, tk: jsonData.tk, ts: jsonData.ts, ls: jsonData.ls, ti: jsonData.ti, c: jsonData.c, lp: jsonData.lp, pc: jsonData.pc, o: jsonData.o, h: jsonData.h, l: jsonData.l, ft: jsonData.ft, ap: jsonData.ap, v: jsonData.v, bp1: jsonData.bp1, sp1: jsonData.sp1, bq1: jsonData.bp1, sq1: jsonData.ap1 } }, { new: true })
             } else {
               let obj = { t: jsonData.t, pp: jsonData.pp, ml: jsonData.ml, e: jsonData.e, tk: jsonData.tk, ts: jsonData.ts, ls: jsonData.ls, ti: jsonData.ti, c: jsonData.c, lp: jsonData.lp, pc: jsonData.pc, o: jsonData.o, h: jsonData.h, l: jsonData.l, ft: jsonData.ft, ap: jsonData.ap, v: jsonData.v, bp1: jsonData.bp1, sp1: jsonData.sp1, bq1: jsonData.bp1, sq1: jsonData.ap1 }
-              await realtimeData.create(obj)
+              await realtimeData.create(jsonData)
             }
           }
           if ('s' in jsonData && jsonData['s'] == 'OK') {
@@ -90,7 +90,7 @@ async function CreateSession(req, res) {
               "t": "h"
             }
             ws.send(JSON.stringify(dataToSend1));
-            let findExchange = await ExchangeToken.find({ exchange: "NSE" });
+            let findExchange = await ExchangeToken.find({ exchange: "NSE", sheet: "NSE" });
             if (findExchange.length > 0) {
               for (let i = 0; i < findExchange.length; i++) {
                 const channel = `${findExchange[i].exchange}|${findExchange[i].token}`
@@ -115,7 +115,7 @@ async function CreateSession(req, res) {
     console.log(err);
   }
 }
-// setInterval(CreateSession, 50000);
+setInterval(CreateSession, 50000);
 exports.GetSocketData = async (req, res) => {
   try {
     const data = await realtimeData.find();

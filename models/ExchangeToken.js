@@ -8,6 +8,9 @@ const SymbolSchema = mongoose.Schema({
     token: {
         type: String
     },
+    sheet: {
+        type: String
+    },
     Symbol:{
         type: String
     }
