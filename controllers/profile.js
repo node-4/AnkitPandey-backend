@@ -179,7 +179,7 @@ exports.AddExchangeTokenExcel = async (req, res) => {
         const sheet_name_list = workbook.SheetNames;
         const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
         console.log(data);
-        for (let i = 3430; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             let findCash = await ExchangeToken.findOne({ sheet: req.params.sheet, exchange: data[i].Exch || data[i].exch, Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token });
             if (findCash) {
                 await ExchangeToken.findByIdAndUpdate({ _id: findCash._id }, { $set: { Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token } }, { new: true })
