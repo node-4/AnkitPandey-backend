@@ -208,30 +208,34 @@ exports.getHistorical = async (req, res) => {
                 'Content-Type': 'application/json',
             }
         })
-        if (Data.data.result == undefined) {
-
+        if (Data.data.emsg == 'No data available' && Data.data.stat == 'Not_Ok') {
+            res.status(200).json({ message: "No data available", result: {}, });
         } else {
-            for (let k = 0; k < Data.data.result.length; k++) {
-                let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
-                if (findHis) {
-                    console.log("------------");
-                    let findHis = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
-                } else {
-                    let obj = {
-                        exchange: req.body.exchange,
-                        token: req.body.token,
-                        close: Data.data.result[k].close,
-                        high: Data.data.result[k].high,
-                        low: Data.data.result[k].low,
-                        open: Data.data.result[k].open,
-                        time: Data.data.result[k].time,
-                        volume: Data.data.result[k].volume,
-                        resolution: req.body.resolution
+            if (Data.data.result == undefined) {
+
+            } else {
+                for (let k = 0; k < Data.data.result.length; k++) {
+                    let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
+                    if (findHis) {
+                        console.log("------------");
+                        let findHis = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                    } else {
+                        let obj = {
+                            exchange: req.body.exchange,
+                            token: req.body.token,
+                            close: Data.data.result[k].close,
+                            high: Data.data.result[k].high,
+                            low: Data.data.result[k].low,
+                            open: Data.data.result[k].open,
+                            time: Data.data.result[k].time,
+                            volume: Data.data.result[k].volume,
+                            resolution: req.body.resolution
+                        }
+                        await historicalData.create(obj)
                     }
-                    await historicalData.create(obj)
                 }
+                res.status(200).json({ message: "Data get succefully", result: Data.data.result, });
             }
-            res.status(200).json({ message: "Data get succefully", result: Data.data.result, });
         }
     } catch (err) {
         console.log(err);
@@ -252,30 +256,33 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
                 'Content-Type': 'application/json',
             }
         })
-        console.log(Data);
-        if (Data.data.result == undefined) {
-
+        if (Data.data.emsg == 'No data available' && Data.data.stat == 'Not_Ok') {
+            res.status(200).json({ message: "No data available", result: {}, });
         } else {
-            for (let k = 0; k < Data.data.result.length; k++) {
-                let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
-                if (findHis) {
-                    let findHisss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
-                } else {
-                    let obj = {
-                        exchange: req.body.exchange,
-                        token: req.body.token,
-                        close: Data.data.result[k].close,
-                        high: Data.data.result[k].high,
-                        low: Data.data.result[k].low,
-                        open: Data.data.result[k].open,
-                        time: Data.data.result[k].time,
-                        volume: Data.data.result[k].volume,
-                        resolution: req.body.resolution
+            if (Data.data.result == undefined) {
+
+            } else {
+                for (let k = 0; k < Data.data.result.length; k++) {
+                    let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
+                    if (findHis) {
+                        let findHisss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                    } else {
+                        let obj = {
+                            exchange: req.body.exchange,
+                            token: req.body.token,
+                            close: Data.data.result[k].close,
+                            high: Data.data.result[k].high,
+                            low: Data.data.result[k].low,
+                            open: Data.data.result[k].open,
+                            time: Data.data.result[k].time,
+                            volume: Data.data.result[k].volume,
+                            resolution: req.body.resolution
+                        }
+                        await historicalData.create(obj)
                     }
-                    await historicalData.create(obj)
                 }
+                res.status(200).json({ message: "Data get succefully", result: Data.data.result, });
             }
-            res.status(200).json({ message: "Data get succefully", result: Data.data.result, });
         }
 
     } catch (err) {
