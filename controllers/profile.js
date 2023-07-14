@@ -292,18 +292,58 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
 exports.dashboard = async (req, res) => {
     try {
         const nifty50 = await socket.findOne({ e: "NSE", tk: "26000" });
+        let nifty50ExchangeData = await ExchangeToken.findOne({ exchange: "NSE", token: "26000" });
         const niftyBank = await socket.findOne({ e: "NSE", tk: "26009" });
+        let niftyBankExchangeData = await ExchangeToken.findOne({ exchange: "NSE", token: "26009" });
         const niftyFinService = await socket.findOne({ e: "NSE", tk: "26037" });
+        let niftyFinServiceExchangeData = await ExchangeToken.findOne({ exchange: "NSE", token: "26037" });
         const sensex = await socket.findOne({ e: "BSE", tk: "1" });
+        let sensexExchangeData = await ExchangeToken.findOne({ exchange: "BSE", token: "1" });
         const indiaFix = await socket.findOne({ e: "NSE", tk: "26017" });
-        let obj = {
-            nifty50: { lp: nifty50.lp, pc: nifty50.pc },
-            niftyFinService: { lp: niftyFinService.lp, pc: niftyFinService.pc },
-            niftyBank: { lp: niftyBank.lp, pc: niftyBank.pc },
-            sensex: { lp: sensex.lp, pc: sensex.pc },
-            indiaFix: { lp: indiaFix.lp, pc: indiaFix.pc },
-        }
-        res.status(200).json({ message: "ok", data: obj });
+        let indiaFixExchangeData = await ExchangeToken.findOne({ exchange: "NSE", token: "26017" });
+        let data = [
+            {
+                name: "nifty50",
+                lp: nifty50.lp,
+                pc: nifty50.pc,
+                e: nifty50.e,
+                tk: nifty50.tk,
+                ExchangeData: nifty50ExchangeData
+            },
+            {
+                name: "niftyFinService",
+                lp: niftyFinService.lp,
+                pc: niftyFinService.pc,
+                e: niftyFinService.e,
+                tk: niftyFinService.tk,
+                ExchangeData: niftyFinServiceExchangeData
+            },
+            {
+                name: "niftyBank",
+                lp: niftyBank.lp,
+                pc: niftyBank.pc,
+                e: niftyBank.e,
+                tk: niftyBank.tk,
+                ExchangeData: niftyBankExchangeData
+            },
+            {
+                name: "sensex",
+                lp: sensex.lp,
+                pc: sensex.pc,
+                e: sensex.e,
+                tk: sensex.tk,
+                ExchangeData: sensexExchangeData
+            },
+            {
+                name: "indiaFix",
+                lp: indiaFix.lp,
+                pc: indiaFix.pc,
+                e: indiaFix.e,
+                tk: indiaFix.tk,
+                ExchangeData: indiaFixExchangeData
+            }
+        ]
+        res.status(200).json({ message: "ok", data: data });
     } catch (err) {
         res.status(400).json({ message: err.message, });
     }
