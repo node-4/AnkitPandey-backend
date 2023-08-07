@@ -1,4 +1,4 @@
-Exch,Exchange Segment,Group Name,Symbol,Token,Instrument Type,Instrument Name,Formatted Ins Name,Trading Symbol,Lot Size,Tick Size
+Exch,Exchange Segment,Group Name,Symbol,Token,Instrument Type,Instrument Name,Formatted Ins Name,TradingSymbol,Lot Size,Tick Size
 NSE,nse_cm,EQ,011NSETEST,14747,0,011NSETEST,011NSETEST,011NSETEST-EQ,1,0.05
 NSE,nse_cm,EQ,021NSETEST,14751,0,021NSETEST,021NSETEST,021NSETEST-EQ,1,0.05
 NSE,nse_cm,EQ,031NSETEST,14753,0,031NSETEST,031NSETEST,031NSETEST-EQ,1,0.05

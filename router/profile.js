@@ -22,4 +22,5 @@ router.post('/AddExchangeTokenExcel/:sheet', upload.single('file'), profile.AddE
 router.post('/getHistorical', profile.getHistorical);
 router.post('/getHistoricalbeforeLogin', profile.getHistoricalbeforeLogin);
 router.get('/dashboard', profile.dashboard);
+router.get('/getAllExchangeToken/:exchange', profile.getAllExchangeToken)
 module.exports = router;

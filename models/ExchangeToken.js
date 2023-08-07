@@ -11,7 +11,10 @@ const SymbolSchema = mongoose.Schema({
     sheet: {
         type: String
     },
-    Symbol:{
+    Symbol: {
+        type: String
+    },
+    tradingSymbol: {
         type: String
     }
 })

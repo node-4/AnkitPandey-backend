@@ -15,8 +15,11 @@ async function generateSessionId(userId, req, res) {
             "https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/customer/getAPIEncpkey",
             { userId: userId }
         );
+        console.log(authCodeData.data.encKey);
         const encKey = authCodeData.data.encKey;
+        console.log(encKey);
         const userData = await authVender.findOne({ userId: userId });
+        console.log(userData);
         // if(!userData){
         //     return res.status(401).json({
         //         message: "appCode is not register resister first"
@@ -179,9 +182,9 @@ exports.AddExchangeTokenExcel = async (req, res) => {
         for (let i = 0; i < data.length; i++) {
             let findCash = await ExchangeToken.findOne({ sheet: req.params.sheet, exchange: data[i].Exch || data[i].exch, Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token });
             if (findCash) {
-                await ExchangeToken.findByIdAndUpdate({ _id: findCash._id }, { $set: { Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token } }, { new: true })
+                await ExchangeToken.findByIdAndUpdate({ _id: findCash._id }, { $set: { Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token, tradingSymbol: data[i].TradingSymbol } }, { new: true })
             } else {
-                let obj = { sheet: req.params.sheet, exchange: data[i].Exch || data[i].exch, Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token }
+                let obj = { sheet: req.params.sheet, exchange: data[i].Exch || data[i].exch, Symbol: data[i].Symbol || data[i].symbol, token: data[i].Token || data[i].token, tradingSymbol: data[i].TradingSymbol }
                 await ExchangeToken.create(obj);
             }
         }
@@ -205,6 +208,7 @@ exports.getHistorical = async (req, res) => {
                 'Content-Type': 'application/json',
             }
         })
+        console.log(Data);
         if (Data.data.emsg == 'No data available' && Data.data.stat == 'Not_Ok') {
             res.status(200).json({ message: "No data available", result: {}, });
         } else {
@@ -216,8 +220,9 @@ exports.getHistorical = async (req, res) => {
                     let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
                     if (findHis) {
                         console.log("------------");
-                        let time = (Data.data.result[k].time).slice(0, 10);
-                        let obj = {
+                        let findHiss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                        let time = Data.data.result[k].time.slice(0, 10);
+                        let obj1 = {
                             exchange: req.body.exchange,
                             token: req.body.token,
                             close: Data.data.result[k].close,
@@ -228,8 +233,7 @@ exports.getHistorical = async (req, res) => {
                             volume: Data.data.result[k].volume,
                             resolution: req.body.resolution
                         }
-                        array.push(obj)
-                        let findHiss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                        array.push(obj1)
                     } else {
                         let time = Data.data.result[k].time.slice(0, 10);
                         let obj1 = {
@@ -272,7 +276,7 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
         const api_key = 'phbqbEUMFmlirQuSsQUaVzTbkgusTfqqhKZgGNjtegLWtdrItIhrbzBGmGhlqpMhBqjJgssJgqqdfaZIsdNmZVVHBrpOrTyYScId';
         const appCode = "YPBDUOOFTSD97U3DGOO4"
         const session_request = await generateSessionId(client_key, api_key, appCode);
-        console.log("---------", session_request);
+        console.log(session_request);
         const session_id = session_request.userSession
         const data = { exchange: req.body.exchange, from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token, };
         const Data = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/chart/history", data, {
@@ -281,6 +285,7 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
                 'Content-Type': 'application/json',
             }
         })
+        console.log(Data);
         if (Data.data.emsg == 'No data available' && Data.data.stat == 'Not_Ok') {
             res.status(200).json({ message: "No data available", result: {}, });
         } else {
@@ -291,22 +296,7 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
                 for (let k = 0; k < Data.data.result.length; k++) {
                     let findHis = await historicalData.findOne({ exchange: req.body.exchange, resolution: req.body.resolution, token: req.body.token, time: Data.data.result[k].time });
                     if (findHis) {
-                        let time = (Data.data.result[k].time).slice(0, 10);
-                        let obj = {
-                            exchange: req.body.exchange,
-                            token: req.body.token,
-                            close: Data.data.result[k].close,
-                            high: Data.data.result[k].high,
-                            low: Data.data.result[k].low,
-                            open: Data.data.result[k].open,
-                            time: time,
-                            volume: Data.data.result[k].volume,
-                            resolution: req.body.resolution
-                        }
-                        array.push(obj)
-                        let findHisss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
-                    } else {
-                        let time = (Data.data.result[k].time).slice(0, 10);
+                        let time = Data.data.result[k].time.slice(0, 10);
                         let obj1 = {
                             exchange: req.body.exchange,
                             token: req.body.token,
@@ -319,6 +309,8 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
                             resolution: req.body.resolution
                         }
                         array.push(obj1)
+                        let findHisss = await historicalData.findByIdAndUpdate({ _id: findHis._id }, { $set: { resolution: req.body.resolution, exchange: req.body.exchange, token: req.body.token, time: Data.data.result[k].time } }, { new: true });
+                    } else {
                         let obj = {
                             exchange: req.body.exchange,
                             token: req.body.token,
@@ -330,7 +322,19 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
                             volume: Data.data.result[k].volume,
                             resolution: req.body.resolution
                         }
-                        console.log(obj);
+                        let time = Data.data.result[k].time.slice(0, 10);
+                        let obj1 = {
+                            exchange: req.body.exchange,
+                            token: req.body.token,
+                            close: Data.data.result[k].close,
+                            high: Data.data.result[k].high,
+                            low: Data.data.result[k].low,
+                            open: Data.data.result[k].open,
+                            time: time,
+                            volume: Data.data.result[k].volume,
+                            resolution: req.body.resolution
+                        }
+                        array.push(obj1);
                         await historicalData.create(obj)
                     }
                 }
@@ -399,5 +403,20 @@ exports.dashboard = async (req, res) => {
         res.status(200).json({ message: "ok", data: data });
     } catch (err) {
         res.status(400).json({ message: err.message, });
+    }
+};
+exports.getAllExchangeToken = async (req, res) => {
+    try {
+        const data = await ExchangeToken.find({ exchange: req.params.exchange });
+        if (data.length == 0) {
+            res.status(404).json({ message: "ok", result: {}, });
+        } else {
+            res.status(200).json({ message: "ok", result: data, });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            message: err.message,
+        });
     }
 };
