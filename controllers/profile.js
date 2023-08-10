@@ -287,7 +287,7 @@ exports.getHistoricalbeforeLogin = async (req, res) => {
         })
         console.log(Data);
         if (Data.data.emsg == 'No data available' && Data.data.stat == 'Not_Ok') {
-            res.status(200).json({ message: "No data available", result: {}, });
+            res.status(200).json({ message: "No data available", result: [], });
         } else {
             if (Data.data.result == undefined) {
 
