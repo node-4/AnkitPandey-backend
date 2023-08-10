@@ -115,7 +115,7 @@ async function CreateSession(req, res) {
     console.log(err);
   }
 }
-setInterval(CreateSession, 50000);
+setInterval(CreateSession, 10000);
 exports.GetSocketData = async (req, res) => {
   try {
     const data = await realtimeData.find();

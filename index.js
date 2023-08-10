@@ -31,10 +31,10 @@ const funds = require('./router/funds');
 const contract_master = require('./router/conteact_master');
 const profile = require('./router/profile');
 const history = require('./router/history');
-// const socket = require('./router/socket');
+const socket = require('./router/socket');
 const admin = require('./router/admin.route');
-// const marketdepth = require('./router/marketdepth');
-// const historicalData = require('./controllers/historicalData');
+const marketdepth = require('./router/marketdepth');
+const historicalData = require('./controllers/historicalData');
 
 app.use('/api/v1/', auth_Router);
 app.use('/api/v1/order', order_Router);
@@ -42,7 +42,7 @@ app.use('/api/v1/funds', funds);
 app.use('/api/v1/contract', contract_master);
 app.use('/api/v1/profile', profile);
 app.use('/api/v1/history', history);
-// app.use('/api/v1/socket', socket)
+app.use('/api/v1/socket', socket)
 app.use('/api/v1/admin', admin)
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
