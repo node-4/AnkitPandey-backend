@@ -9,7 +9,8 @@ const orders = require('../models/orders');
 async function generateSessionId(userId, req, res) {
     try {
         console.log(userId)
-        const authCodeData = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/customer/getAPIEncpkey", { userId: userId });
+        let data1 = { userId: userId.toString() };
+        const authCodeData = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/customer/getAPIEncpkey", data1);
         console.log(authCodeData.data.encKey)
         const encKey = authCodeData.data.encKey
         const userData = await authVender.findOne({ userId: userId });

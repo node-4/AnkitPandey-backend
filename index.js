@@ -42,7 +42,7 @@ app.use('/api/v1/funds', funds);
 app.use('/api/v1/contract', contract_master);
 app.use('/api/v1/profile', profile);
 app.use('/api/v1/history', history);
-app.use('/api/v1/socket', socket)
+// app.use('/api/v1/socket', socket)
 app.use('/api/v1/admin', admin)
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);

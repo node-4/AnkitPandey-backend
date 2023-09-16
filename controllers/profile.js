@@ -273,9 +273,8 @@ exports.getHistorical = async (req, res) => {
 exports.getHistoricalbeforeLogin = async (req, res) => {
     try {
         const client_key = 764564;
-        const api_key = 'phbqbEUMFmlirQuSsQUaVzTbkgusTfqqhKZgGNjtegLWtdrItIhrbzBGmGhlqpMhBqjJgssJgqqdfaZIsdNmZVVHBrpOrTyYScId';
-        const appCode = "YPBDUOOFTSD97U3DGOO4"
-        const session_request = await generateSessionId(client_key, api_key, appCode);
+        const api_key = 'MG8uyImXonhkWs0bixScj7uGuSdLNhm6KJqlzlZH585BxdipPYnXp6rSL0WC0C9EhlQNdJ2Z0ey35xaVBLHkYQqeE44NvVDVMn9DgTy7yi6xJS2rzQ3nyC2o3WXtYddd';
+        const appCode = "sNrvCklLaqoUaXF"        const session_request = await generateSessionId(client_key, api_key, appCode);
         console.log(session_request);
         const session_id = session_request.userSession
         const data = { exchange: req.body.exchange, from: req.body.from, resolution: req.body.resolution, to: req.body.to, token: req.body.token, };

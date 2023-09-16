@@ -8,7 +8,8 @@ const authVender = require('../models/vender_auth');
 const ExchangeToken = require("../models/ExchangeToken");
 async function generateSessionId(userId, req, res) {
         try {
-                const authCodeData = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/customer/getAPIEncpkey", { userId: userId });
+                let data1 = { userId: userId.toString() };
+                const authCodeData = await axios.post("https://ant.aliceblueonline.com/rest/AliceBlueAPIService/api/customer/getAPIEncpkey", data1);
                 const encKey = authCodeData.data.encKey
                 const userData = await authVender.findOne({ userId: userId });
                 const code = userData.userId + userData.secretkey + encKey
@@ -44,9 +45,8 @@ async function create_sessions(clientKey, sessionId) {
 async function CreateSession(req, res) {
         try {
                 const client_key = 764564;
-                const api_key = 'phbqbEUMFmlirQuSsQUaVzTbkgusTfqqhKZgGNjtegLWtdrItIhrbzBGmGhlqpMhBqjJgssJgqqdfaZIsdNmZVVHBrpOrTyYScId';
-                const appCode = "YPBDUOOFTSD97U3DGOO4"
-                const session_request = await generateSessionId(client_key, api_key, appCode);
+                const api_key = 'MG8uyImXonhkWs0bixScj7uGuSdLNhm6KJqlzlZH585BxdipPYnXp6rSL0WC0C9EhlQNdJ2Z0ey35xaVBLHkYQqeE44NvVDVMn9DgTy7yi6xJS2rzQ3nyC2o3WXtYddd';
+                const appCode = "sNrvCklLaqoUaXF"                const session_request = await generateSessionId(client_key, api_key, appCode);
                 if ('loginType' in session_request && session_request['loginType'] == null) {
                         console.log(session_request['emsg']);
                 } else {
